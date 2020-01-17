@@ -19,6 +19,7 @@ export class MapComponent implements OnInit{
 
     map;
     draw;
+    polyId;
     searchText: '';
     results: {};
     possibleLocs: [];
@@ -27,6 +28,7 @@ export class MapComponent implements OnInit{
     initLng = -71.06;
     kwattsPerSqM;
 
+    // create the map and draw objects
     ngOnInit() {
         mapboxgl.accessToken = environment.mapbox.accessToken;
         this.map = new mapboxgl.Map({
@@ -44,12 +46,17 @@ export class MapComponent implements OnInit{
             }
         });
 
+        // add the control box that will allow users to draw a polygon,
+        // as well as the events that will trigger drawing
         this.map.addControl(this.draw);
         this.map.on('draw.create', this.updateArea);
         this.map.on('draw.delete', this.updateArea);
         this.map.on('draw.update', this.updateArea);
     }
 
+    // gets the text written in the search box and sends a search to the
+    // mapbox api. the results are used to populate a table that can be
+    // selected from
     public sendSearch = () => {
         const baseUrl = 'https://api.mapbox.com/geocoding/v5/mapbox.places/';
         const encodedLoc = encodeURIComponent(this.searchText);
@@ -65,12 +72,15 @@ export class MapComponent implements OnInit{
         }
     }
 
+    // triggered when a location suggestion is clicked, jumps to that location
     public newLoc = (center) => {
         this.map.jumpTo({
             center: center
         });
     }
 
+    // gets all the points drawn on the map and calculates the area of the 
+    // resulting polygon
     public updateArea = (e) => {
         var data = this.draw.getAll();
         //var answer = document.getElementById('calculated-area');
@@ -85,9 +95,11 @@ export class MapComponent implements OnInit{
             el.className = 'marker';
             el.innerHTML = this.kwattsPerSqM + ' kW/m<sup>2</sup>';
 
+
             new mapboxgl.Marker(el)
             .setLngLat(data.features[data.features.length - 1].geometry.coordinates[0][0])
             .addTo(this.map);
+            this.polyId.push(data.features[data.features.length - 1].id)
         }   
     }
 }
