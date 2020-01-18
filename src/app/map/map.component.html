@@ -1,0 +1,15 @@
+<link
+rel="stylesheet"
+href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.css"
+type="text/css"
+/>
+<body>
+    <div class="map" id="map"></div>
+    <div class="display">{{wattsPerSqM}}</div>
+    <input placeholder="Press enter to search" (change)="sendSearch()" [(ngModel)]="searchText" class="search-box" type="text">
+    <ul *ngIf="results" class="list">
+        <li *ngFor="let result of results.features" (click)="newLoc(result.center)" class="list-item">
+            {{ result.place_name }}
+        </li>
+    </ul>
+</body>
