@@ -1,3 +1,4 @@
+declare var require: any;
 import { Component, OnInit } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { MapService } from './map.service'
@@ -19,14 +20,13 @@ export class MapComponent implements OnInit{
 
     map;
     draw;
-    polyId;
     searchText: '';
     results: {};
-    possibleLocs: [];
+    possibleLocs;
     style = 'mapbox://styles/mapbox/streets-v11';
     initLat = 42.36;
     initLng = -71.06;
-    kwattsPerSqM;
+    kwatts;
 
     // create the map and draw objects
     ngOnInit() {
@@ -68,7 +68,7 @@ export class MapComponent implements OnInit{
                 this.results = data;
             });
         }else{
-            this.results.features = [];
+            this.results['features'] = [];
         }
     }
 
@@ -89,17 +89,15 @@ export class MapComponent implements OnInit{
             //restrict to area to 2 decimal points
             var rounded_area = Math.round(area * 100) / 100;
             // assuming power gen of 1.35 W / m^2
-            this.kwattsPerSqM = Math.round((rounded_area * 1.35 / 1000) * 100) / 100
+            this.kwatts = Math.round((rounded_area * 1.35 / 1000) * 100) / 100
 
             var el = document.createElement('div');
             el.className = 'marker';
-            el.innerHTML = this.kwattsPerSqM + ' kW/m<sup>2</sup>';
-
+            el.innerHTML = this.kwatts + ' kW';
 
             new mapboxgl.Marker(el)
             .setLngLat(data.features[data.features.length - 1].geometry.coordinates[0][0])
             .addTo(this.map);
-            this.polyId.push(data.features[data.features.length - 1].id)
         }   
     }
 }
