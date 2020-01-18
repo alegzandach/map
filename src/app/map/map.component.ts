@@ -38,6 +38,7 @@ export class MapComponent implements OnInit{
             center: [this.initLng, this.initLat]
         });
 
+        // instantiate draw object. Snippet from mapbox.com
         this.draw = new MapboxDraw({
             displayControlsDefault: false,
             controls: {
@@ -47,7 +48,8 @@ export class MapComponent implements OnInit{
         });
 
         // add the control box that will allow users to draw a polygon,
-        // as well as the events that will trigger drawing
+        // as well as the events that will trigger drawing. Snippet
+        // mapbox.com
         this.map.addControl(this.draw);
         this.map.on('draw.create', this.updateArea);
         this.map.on('draw.delete', this.updateArea);
@@ -80,7 +82,7 @@ export class MapComponent implements OnInit{
     }
 
     // gets all the points drawn on the map and calculates the area of the 
-    // resulting polygon
+    // resulting polygon. Snippet from mapbox.com
     public updateArea = (e) => {
         var data = this.draw.getAll();
         //var answer = document.getElementById('calculated-area');
